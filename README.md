@@ -2,7 +2,7 @@
 
 Интерактивный 3D-атлас о *Physarum polycephalum*: гранж-журнал 90-х, VHS и живая GPU-симуляция слизевика.
 
-**Сайт:** https://dmitryleleee.github.io/blob/
+**Сайт:** https://dmitrylelee.github.io/blob/
 
 - `index.html` — текст глав и вкладышей;
 - `style.css` — вёрстка, гранж и VHS-фактура;
