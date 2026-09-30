@@ -107,7 +107,8 @@ const pauseBtn = $('.pause');
 pauseBtn.addEventListener('click', () => {
   paused = !paused;
   pauseBtn.setAttribute('aria-pressed', String(paused));
-  pauseBtn.textContent = paused ? '▶ пуск' : '❚❚ пауза';
+  pauseBtn.querySelector('.pi').textContent = paused ? '▶' : '❚❚';
+  pauseBtn.querySelector('.pl').textContent = paused ? ' пуск' : ' пауза';
   document.body.classList.toggle('paused', paused);
 });
 
@@ -208,11 +209,12 @@ function drawWorld() {
     g.fillStyle = '#e8c64e'; g.beginPath(); g.arc(x, y, Math.max(2, cell * 0.55), 0, 7); g.fill();
   }
   // пометки маркером
-  g.font = `700 ${Math.max(15, cell * 2.6)}px Caveat, cursive`;
+  g.font = `700 ${Math.max(14, cell * 2.4)}px Caveat, cursive`;
   g.fillStyle = '#d0602f';
-  const note = (lat, lon, t, dx = 8, dy = -8) => { const [x, y] = toXY(lat, lon); g.fillText(t, x + dx, y + dy); };
-  note(35.7, 139.7, 'Токио-2010', 10, 18);
-  note(48.8, 2.3, 'зоопарк-2019', -40, 26);
+  const note = (lat, lon, t, dx, dy, align) => { const [x, y] = toXY(lat, lon); g.textAlign = align; g.fillText(t, x + dx, y + dy); };
+  note(35.7, 139.7, 'Токио-2010', -cell * 2, cell * 5, 'right');
+  note(48.8, 2.3, 'зоопарк-2019', -cell * 2, cell * 6, 'right');
+  g.textAlign = 'left';
   g.fillStyle = 'rgba(244,231,174,.75)';
   g.font = `${Math.max(12, cell * 1.8)}px "PT Mono", monospace`;
   g.fillText('находки ≠ ареал', 8, cssH - 8);
@@ -620,7 +622,7 @@ function blockedFrom(cv) {
 const panels = [];
 class Panel {
   constructor(el, sim) {
-    this.el = el; this.sim = sim; this.visible = false; this.warm = !reduced; this.warmTo = 480; this.running = !reduced;
+    this.el = el; this.sim = sim; this.visible = false; this.warm = !reduced; this.warmLen = 480; this.warmTo = 480; this.running = !reduced;
     this.svg = el.querySelector('svg');
     this.rect = null;
     el.addEventListener('pointerdown', e => {
@@ -636,8 +638,8 @@ class Panel {
     panels.push(this);
   }
   // reduced motion: после изменений один раз досчитать опыт «за кадром» и показать статичный результат
-  rewarm() { if (reduced && !this.running) { this.warm = false; this.warmTo = this.sim.steps + 480; } }
-  setAspect() { this.el.style.aspectRatio = `${this.sim.w} / ${this.sim.h}`; this.svg.setAttribute('viewBox', `0 0 ${this.sim.w} ${this.sim.h}`); this.svg.setAttribute('preserveAspectRatio', 'none'); }
+  rewarm() { if (reduced && !this.running) { this.warm = false; this.warmTo = this.sim.steps + this.warmLen; } }
+  setAspect() { this.el.style.aspectRatio = `${this.sim.w} / ${this.sim.h}`; this.el.closest('.lab').style.maxWidth = `calc(70vh * ${(this.sim.w / this.sim.h).toFixed(4)})`; this.svg.setAttribute('viewBox', `0 0 ${this.sim.w} ${this.sim.h}`); this.svg.setAttribute('preserveAspectRatio', 'none'); }
   tick() {}
   measure() {
     this.rect = this.el.getBoundingClientRect();
@@ -652,6 +654,7 @@ function makeMaze() {
   const S = 440, C = 11, cell = S / C, n = isMobile ? 128 : 192;
   const sim = new Sim({ w: S, h: S, n, wallStyle: 0 });
   const panel = new Panel($('#maze-panel'), sim);
+  panel.warmLen = panel.warmTo = 1150;
   panel.setAspect();
   const cv = document.createElement('canvas'); cv.width = cv.height = S;
   const g = cv.getContext('2d');
@@ -811,6 +814,7 @@ function makeTokyo() {
   const sim = new Sim({ w: W, h: H, n: isMobile ? 112 : 160, wallStyle: 1 });
   const panel = new Panel($('#tokyo-panel'), sim);
   panel.gain = 0.2;
+  panel.warmLen = panel.warmTo = 1500;
   panel.setAspect();
   const proj = projector(KANTO, W, H);
   const cv = rleMask(GEO.regions.kanto);
@@ -981,7 +985,7 @@ const SCENES = {
   final: { pulse: 0, avoid: 0, mem: 0, dim: 1.08 },
   calm: { pulse: 0, avoid: 0, mem: 0, dim: 0.6 },
 };
-const cur = { pulse: 0, avoid: 0, mem: 0, dim: 1, dry: 0, active: 0.1 };
+const cur = { pulse: 0, avoid: 0, mem: 0, dim: 1, dry: 0, active: 0.22 };
 let bg = null, screenRT = null, postMat = null;
 const pointer = { x: -1, y: -1, until: 0, over: false };
 let quality = { dpr: Math.min(isMobile ? 1 : 1.5, devicePixelRatio || 1), bgSteps: isMobile ? 1 : 2, cap: 1 };
@@ -993,7 +997,7 @@ function makeBg() {
   const n = isMobile ? 144 : 320;
   if (bg) { bg.aRT.concat(bg.tRT).forEach(t => t.dispose()); }
   bg = new Sim({ w, h, n, wrap: true });
-  bg.seedAgents(agentsDisc(n, w * 0.5, h * 0.52, Math.min(w, h) * 0.06));
+  bg.seedAgents(agentsDisc(n, w * 0.5, h * 0.52, Math.min(w, h) * 0.1));
   bg.p.memDecay = 0.9985;
   bg.bw = cw;
 }
@@ -1061,7 +1065,7 @@ function frame(now) {
   let dryT = 0;
   if (scroll.scene === 'sleep') { const s = scroll.local; dryT = s < 0.55 ? smooth(0.08, 0.4, s) : 1 - smooth(0.6, 0.88, s); }
   cur.dry = lerp(cur.dry, dryT, 0.06);
-  const growth = clamp(0.08 + scrollY / (innerHeight * 2.5), 0.08, 1);
+  const growth = clamp(0.22 + scrollY / (innerHeight * 2.5), 0.22, 1);
   cur.active = lerp(cur.active, growth * (1 - cur.dry * 0.96), 0.05);
 
   const P = bg.p;
@@ -1070,8 +1074,9 @@ function frame(now) {
   bg.attr = (pointer.over && now < pointer.until) ? [{ x: pointer.x, y: pointer.y, s: 6, r: 40 }] : [];
   bg.foods = bg.attr.length ? [{ x: pointer.x, y: pointer.y, s: 1.5, r: 3 }] : [];
 
+  if (bg.steps < 160 && !warmBg) bg.step(16); // быстрый старт: зародыш сети уже есть при загрузке
   if (warmBg) { // reduced motion: один раз «вырастить» сеть и заморозить
-    bg.step(8);
+    bg.step(25);
     if (bg.steps > 500) warmBg = false;
   } else if (motionOn) bg.step(quality.bgSteps);
 
@@ -1079,7 +1084,7 @@ function frame(now) {
     p.measure();
     if (!p.visible) continue;
     p.tick();
-    if (!p.warm) { p.sim.step(12); if (p.sim.steps >= p.warmTo || !p.sim.agents) p.warm = true; }
+    if (!p.warm) { p.sim.step(24); if (p.sim.steps >= p.warmTo || !p.sim.agents) p.warm = true; }
     else if ((motionOn || (reduced && p.running && !paused))) p.sim.step(isMobile ? 1 : 2);
   }
 
@@ -1088,14 +1093,14 @@ function frame(now) {
   const cr = canvas.getBoundingClientRect();
   const dpr = quality.dpr;
   for (const p of panels) {
-    if (!p.visible || !p.warm) continue;
+    if (!p.visible) continue;
     const r = p.rect;
     if (r.bottom < cr.top || r.top > cr.bottom) continue;
     const x = Math.round((r.left - cr.left) * dpr), y = Math.round((cr.bottom - r.bottom) * dpr);
     const w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
     screenRT.viewport.set(x, y, w, h); screenRT.scissor.set(x, y, w, h); screenRT.scissorTest = true;
     renderer.setRenderTarget(screenRT); // применить вьюпорт
-    p.sim.display(screenRT, t * state.motion, { gain: p.gain || 0.3 });
+    p.sim.display(screenRT, t * state.motion, { gain: p.gain || 0.3, dim: p.warm ? 1 : 0.25 });
     screenRT.viewport.set(0, 0, screenRT.width, screenRT.height); screenRT.scissorTest = false;
   }
   const pu = postMat.uniforms;

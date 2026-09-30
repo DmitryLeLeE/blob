@@ -23,8 +23,7 @@
 <div class="fx fx-lines" aria-hidden="true"></div>
 <div class="scope-ui" aria-hidden="true">
   <div class="scope-reticle"></div>
-  <div class="scope-bar"><i></i><span>≈ 1 мм</span></div>
-  <div class="scope-lbl">ОБ. ×4 · ПЛАЗМОДИЙ · ФОТОПЛАСТИНКА</div>
+  <div class="scope-bar"><span class="scope-lbl">ОБ. ×4 · ФОТОПЛАСТИНКА</span><i></i><span>шкала условная</span></div>
 </div>
 
 <header class="deck">
@@ -36,7 +35,7 @@
       <button type="button" data-mode="vhs" aria-pressed="true">кассета</button>
       <button type="button" data-mode="scope" aria-pressed="false">микроскоп</button>
     </div>
-    <button type="button" class="pause" aria-pressed="false" title="Остановить симуляцию и VHS-эффекты">❚❚ пауза</button>
+    <button type="button" class="pause" aria-pressed="false" aria-label="Пауза: остановить симуляцию и VHS-эффекты"><span class="pi" aria-hidden="true">❚❚</span><span class="pl"> пауза</span></button>
   </div>
   <div class="rec" aria-hidden="true"><b>●</b> REC ▶ <span id="rec-tc">00:14:32</span></div>
 </header>
@@ -420,8 +419,10 @@
 <section class="insert" id="appD" data-scene="calm">
   <div class="spine" aria-hidden="true">ВКЛАДЫШ Г · ТВОЯ СЕТЬ</div>
   <div class="insert-body">
-    <h2 class="ins-title"><span class="ins-letter">Г</span> Сделай свою сеть</h2>
-    <p class="ins-lede">Выберите регион и расставьте «города»: кликните или тапните по суше. Первый город — место, откуда стартует слизевик. Море он не переплывает.</p>
+    <div class="paper-head">
+      <h2 class="ins-title"><span class="ins-letter">Г</span> Сделай свою сеть</h2>
+      <p class="ins-lede">Выберите регион и расставьте «города»: кликните или тапните по суше. Первый город — место, откуда стартует слизевик. Море он не переплывает.</p>
+    </div>
     <div class="lab" id="net-lab">
       <div class="lab-bar">
         <label class="lab-title" for="region">РЕГИОН</label>
