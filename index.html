@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BLOB · Слизевик: разум без мозга</title>
+<meta name="description" content="Интерактивный атлас о слизевике Physarum polycephalum: живая GPU-симуляция, лабиринт, карта Токио, память без мозга и 720 «полов» — с проверкой фактов.">
+<meta name="theme-color" content="#0d0c07">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d0c07'/%3E%3Cpath d='M12 40c6-14 10-22 20-22s10 12 20 8M20 52c4-10 8-14 14-14M32 18c-2-6 2-10 6-10' stroke='%23e0b534' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Dela+Gothic+One&family=PT+Mono&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=Rubik+Glitch&family=Rubik+Microbe&family=Sofia+Sans+Extra+Condensed:wght@800;900&display=swap&subset=cyrillic" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js" } }
+</script>
+</head>
+<body>
+<a class="skip" href="#ch1">Перейти к тексту</a>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="fx fx-grain" aria-hidden="true"></div>
+<div class="fx fx-lines" aria-hidden="true"></div>
+<div class="scope-ui" aria-hidden="true">
+  <div class="scope-reticle"></div>
+  <div class="scope-bar"><i></i><span>≈ 1 мм</span></div>
+  <div class="scope-lbl">ОБ. ×4 · ПЛАЗМОДИЙ · ФОТОПЛАСТИНКА</div>
+</div>
+
+<header class="deck">
+  <a class="logo" href="#top" aria-label="В начало">
+    <span class="logo-b">B</span><span class="logo-l">L</span><span class="logo-o">O</span><span class="logo-b2">B</span>
+  </a>
+  <div class="deck-ctl">
+    <div class="mode" role="group" aria-label="Режим изображения">
+      <button type="button" data-mode="vhs" aria-pressed="true">кассета</button>
+      <button type="button" data-mode="scope" aria-pressed="false">микроскоп</button>
+    </div>
+    <button type="button" class="pause" aria-pressed="false" title="Остановить симуляцию и VHS-эффекты">❚❚ пауза</button>
+  </div>
+  <div class="rec" aria-hidden="true"><b>●</b> REC ▶ <span id="rec-tc">00:14:32</span></div>
+</header>
+
+<main id="top">
+
+<!-- ======================= ОБЛОЖКА ======================= -->
+<section class="hero" data-scene="hero" id="hero">
+  <p class="kicker">кассета №1 · сторона А · атлас в 9 главах и 6 вкладышах</p>
+  <h1 class="chaos chaos-hero" data-seed="7">Слизевик</h1>
+  <p class="hero-sub"><span class="sub-a">разум</span> <span class="sub-b">без</span> <span class="sub-c">мозга</span></p>
+  <p class="hero-latin">BLOB · <i>Physarum polycephalum</i> — «многоголовый»</p>
+  <div class="col hero-col">
+    <p>Жёлтая плёнка на гнилом бревне умеет находить кратчайший путь в лабиринте, строить транспортные сети, сравнимые с инженерными, и привыкать к неприятному. У неё нет ни мозга, ни нейронов — это вообще одна клетка.</p>
+    <p>Сеть на фоне — не видео. Это живая симуляция: тысячи виртуальных частиц оставляют след и идут по чужому следу, как в модели Джеффа Джонса. Она растёт, пока вы крутите плёнку.</p>
+  </div>
+  <p class="marker note-cursor" aria-hidden="true">курсор = хлопья овса.<br>поводи — он потянется →</p>
+  <div class="tape t1" aria-hidden="true"></div>
+  <div class="coffee c1" aria-hidden="true"></div>
+</section>
+
+<!-- ======================= ГЛАВА 1 ======================= -->
+<section class="chapter" id="ch1" data-scene="who">
+  <div class="ch-head">
+    <span class="ch-num" aria-hidden="true">01</span>
+    <h2 class="chaos" data-seed="11">Кто это</h2>
+    <span class="ch-echo ch-echo-v" aria-hidden="true">НИ ГРИБ НИ ЗВЕРЬ</span>
+    <span class="ch-echo ch-echo-u" aria-hidden="true">ОДНА КЛЕТКА</span>
+  </div>
+  <div class="ch-body">
+    <div class="col">
+      <p class="lede">Не гриб, не растение и не животное. Одна гигантская клетка с миллионами ядер.</p>
+      <p><i>Physarum polycephalum</i> — плазмодиальный, или «настоящий», слизевик из группы миксомицетов. В XIX веке его долго записывали в грибы: у него есть споры и плодовые тела. Немецкий ботаник Антон де Бари в 1859 году предложил для таких существ имя Mycetozoa — «грибо-животные». Сегодня по молекулярным данным слизевиков относят к амёбозоям — той же большой ветви, что и амёбы. От грибов, растений и животных они отделились очень давно.</p>
+      <p>Главная стадия жизни — <b>плазмодий</b>: ярко-жёлтая сеть трубок без клеточных перегородок. Ядра внутри делятся, а сама клетка — нет, поэтому в одной мембране их оказываются миллионы, и делятся они синхронно, почти одновременно. Такую клетку называют синцитием.</p>
+      <p>Обычно плазмодий размером в несколько сантиметров, но в хороших условиях разрастается до десятков сантиметров. Он ест бактерии, дрожжи и споры грибов на гниющей древесине и листьях, а в лаборатории — овсяные хлопья. Прозвище «блоб» пришло из фильма ужасов 1958 года «Капля» (The Blob). В 2019 году слизевик показали посетителям Парижского зоопарка — и прозвище разошлось по новостям.</p>
+    </div>
+    <figure class="clip" data-verdict="true">
+      <div class="tape" aria-hidden="true"></div>
+      <p class="clip-kicker">вырезка №01</p>
+      <blockquote>«Плазмодий — это одна клетка, в которой миллионы ядер»</blockquote>
+      <p class="verdict"><span class="v-word">правда</span><svg class="v-ring" viewBox="0 0 220 90" aria-hidden="true"><path d="M20 50C18 20 90 8 150 14c50 5 64 30 56 46-10 22-80 26-130 20C40 76 14 62 26 36"/></svg></p>
+      <figcaption>Плазмодий — синцитий: ядра делятся без деления клетки. Геном: Schaap et al., <i>Genome Biol. Evol.</i>, 2016. Систематика: амёбозои, миксомицеты.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= ГЛАВА 2 ======================= -->
+<section class="chapter" id="ch2" data-scene="pulse">
+  <div class="ch-head">
+    <span class="ch-num" aria-hidden="true">02</span>
+    <h2 class="chaos" data-seed="23">Как он движется</h2>
+    <span class="ch-echo ch-echo-v" aria-hidden="true">ТУДА — ОБРАТНО</span>
+    <span class="ch-echo ch-echo-u" aria-hidden="true">ПУЛЬС</span>
+  </div>
+  <div class="ch-body">
+    <div class="col">
+      <p class="lede">Внутри трубок цитоплазма течёт туда-обратно, как прибой. Это называется челночным током.</p>
+      <p>Стенки трубок содержат актин и миозин — те же белки, которыми сокращаются наши мышцы. Волны сокращений бегут по сети, словно перистальтика в кишечнике, и гонят жидкую цитоплазму. Направление потока меняется примерно раз в минуту-две: японский физиолог Нобуро Камия ещё в середине XX века измерял у отдельного тяжа период в 1–3 минуты. Скорость потока доходит примерно до 1 мм в секунду — для внутриклеточного течения это очень быстро.</p>
+      <p>Сам плазмодий ползёт гораздо медленнее: от долей сантиметра до нескольких сантиметров в час. Трубки, по которым течёт много, утолщаются, а те, где поток слабый, истончаются и исчезают. Это простое правило — «где течёт, там и нужно» — лежит в основе математической модели Теро, Кобаяси и Накагаки (2007), о ней ещё будет речь.</p>
+      <p class="aside">Сейчас сеть на фоне пульсирует. Это ускоренная визуализация: у настоящего слизевика период около 100 секунд, у нас — пара секунд.</p>
+      <figure class="osc" aria-label="Схема челночного тока: поток меняет направление примерно каждые 1–2 минуты">
+        <svg viewBox="0 0 600 120" aria-hidden="true"><path class="osc-path" d="M0 60 C40 10 80 10 120 60 S200 110 240 60 S320 10 360 60 S440 110 480 60 S560 10 600 60"/><line x1="0" y1="60" x2="600" y2="60"/></svg>
+        <figcaption><span>→ к фронту</span><span>t ≈ 100 с</span><span>← назад</span></figcaption>
+      </figure>
+    </div>
+    <figure class="clip" data-verdict="true">
+      <div class="tape" aria-hidden="true"></div>
+      <p class="clip-kicker">вырезка №02</p>
+      <blockquote>«Цитоплазма меняет направление примерно каждые две минуты»</blockquote>
+      <p class="verdict"><span class="v-word">правда</span><svg class="v-ring" viewBox="0 0 220 90" aria-hidden="true"><path d="M20 50C18 20 90 8 150 14c50 5 64 30 56 46-10 22-80 26-130 20C40 76 14 62 26 36"/></svg></p>
+      <figcaption>Период 1–3 мин, зависит от условий (Kamiya, 1950-е). Перистальтические волны по всей сети: Alim et al., <i>PNAS</i>, 2013.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= ГЛАВА 3 ======================= -->
+<section class="chapter" id="ch3" data-scene="maze">
+  <div class="ch-head">
+    <span class="ch-num" aria-hidden="true">03</span>
+    <h2 class="chaos" data-seed="31">Лабиринт</h2>
+    <span class="ch-echo ch-echo-v" aria-hidden="true">ТУПИК ТУПИК ВЫХОД</span>
+    <span class="ch-echo ch-echo-u" aria-hidden="true">NATURE 2000</span>
+  </div>
+  <div class="ch-body">
+    <div class="col">
+      <p class="lede">В 2000 году слизевик прошёл лабиринт и попал на страницы журнала Nature.</p>
+      <p>Тосиюки Накагаки, Хироясу Ямада и Агота Тот разложили кусочки плазмодия по лабиринту из агара. Кусочки разрослись, слились в один организм и заполнили все ходы. Тогда у входа и выхода положили агаровые блоки с питанием.</p>
+      <p>Примерно через 4 часа плазмодий ушёл из тупиков. Ещё через 4 часа от сети осталась одна толстая трубка — вдоль кратчайшего из возможных маршрутов между кормушками. Слизевик не «видит» лабиринт и не перебирает варианты: он укрепляет трубки с сильным потоком и сворачивает лишние. В 2008 году за этот опыт авторы получили Шнобелевскую премию по когнитивистике.</p>
+      <p class="aside">Ниже — та же схема в симуляции. Сначала частицы заполняют ходы, потом появляются две кормушки и лишнее отмирает. Кликните или тапните по лабиринту, чтобы переставить кормушку. Пунктир — кратчайший путь, посчитанный компьютером, для сравнения. Модель агентная, а не химическая: иногда она ошибается, как и настоящий слизевик.</p>
+    </div>
+    <figure class="clip" data-verdict="true">
+      <div class="tape" aria-hidden="true"></div>
+      <p class="clip-kicker">вырезка №03</p>
+      <blockquote>«Слизевик находит кратчайший путь в лабиринте»</blockquote>
+      <p class="verdict"><span class="v-word">правда</span><svg class="v-ring" viewBox="0 0 220 90" aria-hidden="true"><path d="M20 50C18 20 90 8 150 14c50 5 64 30 56 46-10 22-80 26-130 20C40 76 14 62 26 36"/></svg></p>
+      <figcaption>С оговоркой: он сокращает лишние трубки, а не «решает задачу», и выбирает кратчайший путь не в каждом опыте. Nakagaki, Yamada &amp; Tóth, <i>Nature</i> 407, 470 (2000).</figcaption>
+    </figure>
+  </div>
+  <div class="lab" id="maze-lab">
+    <div class="lab-bar">
+      <span class="lab-title">ОПЫТ 03 · ЛАБИРИНТ</span>
+      <span class="lab-clock" id="maze-clock" aria-live="polite">0 ч</span>
+    </div>
+    <div class="simpanel" id="maze-panel" data-sim="maze" role="application" aria-label="Лабиринт со слизевиком. Нажмите, чтобы поставить кормушку.">
+      <svg class="panel-svg" id="maze-svg" aria-hidden="true"></svg>
+    </div>
+    <div class="lab-ctl">
+      <button type="button" data-act="maze-new">новый лабиринт</button>
+      <button type="button" data-act="maze-reset">заново</button>
+      <button type="button" data-act="maze-path" aria-pressed="true">кратчайший путь</button>
+      <button type="button" class="run" data-act="run" hidden>▶ запустить симуляцию</button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= ГЛАВА 4 ======================= -->
+<section class="chapter" id="ch4" data-scene="tokyo">
+  <div class="ch-head">
+    <span class="ch-num" aria-hidden="true">04</span>
+    <h2 class="chaos" data-seed="43">Карта Токио</h2>
+    <span class="ch-echo ch-echo-v" aria-hidden="true">36 ХЛОПЬЕВ</span>
+    <span class="ch-echo ch-echo-u" aria-hidden="true">SCIENCE 2010</span>
+  </div>
+  <div class="ch-body">
+    <div class="col">
+      <p class="lede">Сеть слизевика оказалась похожа на железные дороги вокруг Токио.</p>
+      <p>В 2010 году Ацуси Теро, Тосиюки Накагаки и коллеги из Японии и Великобритании положили 36 овсяных хлопьев на места городов вокруг Токио, а плазмодий — в точку «Токио». Слизевик не любит света, поэтому горы и водоёмы изобразили подсветкой: освещённые участки он старался обходить.</p>
+      <p>Примерно за сутки (около 26 часов) плазмодий соединил все точки. Получившуюся сеть сравнили с реальной железной дорогой по трём характеристикам: стоимость (общая длина), эффективность (насколько короткие пути) и устойчивость (что будет, если какая-то связь оборвётся). По всем трём сеть слизевика оказалась сопоставима с настоящей. Из наблюдений авторы вывели простую математическую модель для проектирования адаптивных сетей. В том же году за это дали вторую Шнобелевскую премию, по транспортному планированию.</p>
+      <p>Важно: слизевик не «перерисовал» схему линий. Сети похожи по характеристикам, а в деталях заметно отличаются. И это не значит, что он спроектировал бы город лучше инженеров: настоящие дороги учитывают рельеф, деньги, историю и людей.</p>
+      <p class="aside">В симуляции море непроходимо, а подсвеченные «горы» агенты стараются обходить. Включите схему, чтобы сравнить сеть с упрощённым рисунком основных линий.</p>
+    </div>
+    <figure class="clip" data-verdict="disputed">
+      <div class="tape" aria-hidden="true"></div>
+      <p class="clip-kicker">вырезка №04</p>
+      <blockquote>«Слизевик нарисовал железные дороги Токио»</blockquote>
+      <p class="verdict"><span class="v-word">спорно</span><svg class="v-ring" viewBox="0 0 220 90" aria-hidden="true"><path d="M20 50C18 20 90 8 150 14c50 5 64 30 56 46-10 22-80 26-130 20C40 76 14 62 26 36"/></svg></p>
+      <figcaption>Сети сопоставимы по стоимости, эффективности и устойчивости, но линии не совпадают. Tero et al., <i>Science</i> 327, 439–442 (2010).</figcaption>
+    </figure>
+  </div>
+  <div class="lab" id="tokyo-lab">
+    <div class="lab-bar">
+      <span class="lab-title">ОПЫТ 04 · КАНТО, 36 ТОЧЕК</span>
+      <span class="lab-clock" id="tokyo-clock" aria-live="polite">0 ч</span>
+    </div>
+    <div class="simpanel" id="tokyo-panel" data-sim="tokyo" role="img" aria-label="Карта района Канто: сеть слизевика растёт из Токио к 36 городам.">
+      <svg class="panel-svg" id="tokyo-svg" aria-hidden="true"></svg>
+    </div>
+    <div class="lab-ctl">
+      <button type="button" data-act="tokyo-rail" aria-pressed="false">схема ж/д</button>
+      <button type="button" data-act="tokyo-reset">вырастить заново</button>
+      <button type="button" class="run" data-act="run" hidden>▶ запустить симуляцию</button>
+    </div>
+    <p class="lab-note">Контур суши: Natural Earth 1:10m. Линии — упрощённая схема основных направлений, ориентировочно.</p>
+  </div>
+</section>
+
+<!-- ======================= ГЛАВА 5 ======================= -->
+<section class="chapter" id="ch5" data-scene="memory">
+  <div class="ch-head">
+    <span class="ch-num" aria-hidden="true">05</span>
+    <h2 class="chaos" data-seed="53">Память без мозга</h2>
+    <span class="ch-echo ch-echo-v" aria-hidden="true">ЗДЕСЬ Я УЖЕ БЫЛ</span>
+    <span class="ch-echo ch-echo-u" aria-hidden="true">СЛЕД</span>
+  </div>
+  <div class="ch-body">
+    <div class="col">
+      <p class="lede">У слизевика нет нейронов, но его прошлое меняет его поведение. Слово «память» здесь — в кавычках.</p>
+      <p><b>След снаружи.</b> Ползущий плазмодий оставляет за собой прозрачную внеклеточную слизь и потом избегает таких участков. Крис Рид и коллеги в 2012 году показали, что так он выбирается из U-образной ловушки — классической задачи для роботов. На агаре, заранее покрытом слизью, справлялся заметно хуже. Авторы назвали это «внешней пространственной памятью»: запись хранится не в клетке, а на земле.</p>
+      <p><b>Ритм.</b> В опыте Сайгусы и соавторов (2008) плазмодий трижды через равные промежутки обдували холодным сухим воздухом, и каждый раз он замедлялся. Потом условия оставляли хорошими — а он всё равно притормаживал в тот момент, когда «должен был» прийти следующий импульс.</p>
+      <p><b>Привыкание.</b> Ромен Буассо, Давид Фогель и Одри Дюссутур (2016) заставляли слизевика ползти к еде по мостику с горьким хинином или кофеином. Сначала он медлил, а через несколько дней переставал обращать внимание. Если дать ему два дня передышки, прежняя осторожность возвращалась. Это хабитуация — простейшая форма научения. В том же году Фогель и Дюссутур показали, что «привыкший» слизевик при слиянии передаёт эту особенность «наивному». В 2019 году нашли, что привыкание к соли переживает месяц спячки. Одно из объяснений — клетка просто накапливает соль внутри.</p>
+      <p><b>Трубки как запись.</b> Мирна Крамар и Карен Алим (2021) заметили, что место, где плазмодий нашёл еду, потом ещё долго «читается» по толщине трубок. Эту трактовку публично критиковали — есть отдельный комментарий в том же журнале.</p>
+      <p class="aside">На фоне ржавые пятна — «старая слизь». В этой главе агенты симуляции избегают своих прежних следов, как в опыте Рида.</p>
+    </div>
+    <figure class="clip" data-verdict="disputed">
+      <div class="tape" aria-hidden="true"></div>
+      <p class="clip-kicker">вырезка №05</p>
+      <blockquote>«Слизевик запоминает и учится»</blockquote>
+      <p class="verdict"><span class="v-word">спорно</span><svg class="v-ring" viewBox="0 0 220 90" aria-hidden="true"><path d="M20 50C18 20 90 8 150 14c50 5 64 30 56 46-10 22-80 26-130 20C40 76 14 62 26 36"/></svg></p>
+      <figcaption>Хабитуация и внешний след показаны в опытах, но это не память в человеческом смысле: нет воспоминаний, есть состояния клетки и среды. Reid et al. 2012; Saigusa et al. 2008; Boisseau et al. 2016; Kramar &amp; Alim 2021 и критика Nogueira Júnior 2021.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= ГЛАВА 6 ======================= -->
+<section class="chapter" id="ch6" data-scene="sleep">
+  <div class="ch-head">
+    <span class="ch-num" aria-hidden="true">06</span>
+    <h2 class="chaos" data-seed="61">Спящий режим</h2>
+    <span class="ch-echo ch-echo-v" aria-hidden="true">ПРОСТО ДОБАВЬ ВОДЫ</span>
+    <span class="ch-echo ch-echo-u" aria-hidden="true">СКЛЕРОЦИЙ</span>
+  </div>
+  <div class="ch-body">
+    <div class="col">
+      <p class="lede">Если стало сухо, слизевик засыпает: превращается в твёрдую корку — склероций.</p>
+      <p>При медленном высыхании плазмодий распадается на множество мелких «капсул» и застывает хрупкой оранжево-коричневой коркой. Так он переживает засуху и голод. Смочите его водой, дайте корм — и обычно за несколько часов или день корка снова расползается жёлтой сетью.</p>
+      <p>Сколько можно так спать? Поставщики учебных культур и лаборатории пишут про месяцы и годы — в сухом месте склероций часто остаётся живым год и дольше. Громкие заявления о «десятилетиях» или «бессмертии» надёжными данными не подтверждены. Сухой склероций легко пересылать почтой — поэтому культуры обычно так и продают.</p>
+      <p>Этим воспользовались французское космическое агентство CNES и научный центр CNRS. 12 августа 2021 года четыре склероция прилетели на МКС на грузовике Cygnus NG-16. В сентябре астронавт Тома Песке их «разбудил». В октябре около 350 тысяч школьников во Франции повторили опыт на Земле, чтобы сравнить поведение слизевика в невесомости и в классе.</p>
+      <p class="aside">Фон сейчас пересыхает и оживает вместе с главой.</p>
+    </div>
+    <figure class="clip" data-verdict="myth">
+      <div class="tape" aria-hidden="true"></div>
+      <p class="clip-kicker">вырезка №06</p>
+      <blockquote>«Слизевик бессмертен»</blockquote>
+      <p class="verdict"><span class="v-word">миф</span><svg class="v-ring" viewBox="0 0 220 90" aria-hidden="true"><path d="M20 50C18 20 90 8 150 14c50 5 64 30 56 46-10 22-80 26-130 20C40 76 14 62 26 36"/></svg></p>
+      <figcaption>Он может долго спать, делиться и сливаться, но культуры стареют и гибнут: от плесени, пересыхания, возраста. Сроки спячки — месяцы и годы, не вечность. Эксперимент на МКС: CNES, #ElèveTonBlob, 2021.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= ГЛАВА 7 ======================= -->
+<section class="chapter" id="ch7" data-scene="spores">
+  <div class="ch-head">
+    <span class="ch-num" aria-hidden="true">07</span>
+    <h2 class="chaos" data-seed="71">Размножение</h2>
+    <span class="ch-echo ch-echo-v" aria-hidden="true">16 × 15 × 3</span>
+    <span class="ch-echo ch-echo-u" aria-hidden="true">720?</span>
+  </div>
+  <div class="ch-body">
+    <div class="col">
+      <p class="lede">Голод и свет — сигнал к размножению. Сеть собирается в «грибочки»-спорангии.</p>
+      <p>Когда еды нет, а света много, плазмодий превращается в россыпь спорангиев — крошечных головок на ножках. Внутри идёт мейоз, и созревают гаплоидные споры с одинарным набором хромосом. Ветер разносит их. Из проросшей споры выходит маленькая амёба; в воде она может отрастить жгутики. Две совместимые клетки сливаются в диплоидную зиготу, и та растёт в новый плазмодий: ядра делятся, а клетка нет.</p>
+      <p><b>Про «720 полов».</b> Кто с кем может слиться, решают три участка генома: <b>matA</b>, <b>matB</b> и <b>matC</b>. Для matA описано 16 вариантов (аллелей), для matB — 15, для matC — 3. Если перемножить, выйдет 16 × 15 × 3 = 720 возможных сочетаний. Отсюда и популярная цифра.</p>
+      <p>Но это <i>типы спаривания</i>, а не полы. У слизевика нет самцов и самок, половые клетки внешне одинаковые. Грубо говоря, варианты — это «пароли»: чтобы слиться, партнёрам нужно различаться по matB, а чтобы зигота развилась дальше — по matA. Число 720 — теоретическое, из известных на сегодня аллелей. А ещё есть лабораторные штаммы, которые обходятся вовсе без партнёра.</p>
+    </div>
+    <figure class="clip" data-verdict="disputed">
+      <div class="tape" aria-hidden="true"></div>
+      <p class="clip-kicker">вырезка №07</p>
+      <blockquote>«У слизевика 720 полов»</blockquote>
+      <p class="verdict"><span class="v-word">спорно</span><svg class="v-ring" viewBox="0 0 220 90" aria-hidden="true"><path d="M20 50C18 20 90 8 150 14c50 5 64 30 56 46-10 22-80 26-130 20C40 76 14 62 26 36"/></svg></p>
+      <figcaption>Арифметика верна, слово — нет: 720 — число сочетаний аллелей трёх локусов совместимости, а не «полов». Youngman et al., <i>Genetics</i>, 1981; Kawano et al., <i>J. Gen. Microbiol.</i>, 1987.</figcaption>
+    </figure>
+  </div>
+  <div class="mating" aria-label="Схема: 16 вариантов matA × 15 вариантов matB × 3 варианта matC = 720 сочетаний">
+    <div class="m-col"><b>matA</b><span>16</span><small>развитие зиготы</small></div>
+    <div class="m-x">×</div>
+    <div class="m-col"><b>matB</b><span>15</span><small>слияние клеток</small></div>
+    <div class="m-x">×</div>
+    <div class="m-col"><b>matC</b><span>3</span><small>условия скрещивания</small></div>
+    <div class="m-x">=</div>
+    <div class="m-col m-res"><b>сочетаний</b><span>720</span><small>не полов!</small></div>
+  </div>
+</section>
+
+<!-- ======================= ГЛАВА 8 ======================= -->
+<section class="chapter" id="ch8" data-scene="compute">
+  <div class="ch-head">
+    <span class="ch-num" aria-hidden="true">08</span>
+    <h2 class="chaos" data-seed="83">Что он значит для нас</h2>
+    <span class="ch-echo ch-echo-v" aria-hidden="true">БИОКОМПЬЮТИНГ</span>
+    <span class="ch-echo ch-echo-u" aria-hidden="true">АЛГОРИТМ</span>
+  </div>
+  <div class="ch-body">
+    <div class="col">
+      <p class="lede">Сам слизевик — медленный и капризный компьютер. А вот его правила оказались очень полезны.</p>
+      <p><b>Алгоритмы.</b> Из модели Теро и соавторов (2007) — трубки толстеют там, где сильный поток, — выросло семейство алгоритмов «Physarum solver». Ими ищут кратчайшие пути, строят деревья Штейнера и проектируют транспортные сети. Агентная модель Джеффа Джонса (2010) — частицы, которые оставляют и чуют след, — работает прямо на этой странице.</p>
+      <p><b>Космос.</b> В 2020 году астрономы под руководством Джозефа Бёрчетта взяли алгоритм Monte Carlo Physarum Machine, вдохновлённый слизевиком. На данных о 37 тысячах галактик из обзора SDSS он восстановил нити «космической паутины» — газ между галактиками, который почти не видно.</p>
+      <p><b>Решения.</b> Слизевик собирает из разных кормов рацион с соотношением белков к углеводам около 2:1 (Дюссутур и соавт., 2010). Он же иногда выбирает «нерационально» — как люди, которым подсунули приманку-ориентир (Латти и Бекман, 2011).</p>
+      <p><b>Биокомпьютинг.</b> Эндрю Адаматцкий с коллегами строили из живого слизевика логические элементы и прикладывали его к картам дорог разных стран. Это красиво, но медленно — часы на операцию — и шумно. Ценность здесь скорее в идеях, чем в замене процессоров.</p>
+    </div>
+    <figure class="clip" data-verdict="disputed">
+      <div class="tape" aria-hidden="true"></div>
+      <p class="clip-kicker">вырезка №08</p>
+      <blockquote>«Слизевик — живой компьютер будущего»</blockquote>
+      <p class="verdict"><span class="v-word">спорно</span><svg class="v-ring" viewBox="0 0 220 90" aria-hidden="true"><path d="M20 50C18 20 90 8 150 14c50 5 64 30 56 46-10 22-80 26-130 20C40 76 14 62 26 36"/></svg></p>
+      <figcaption>Живые «Physarum-машины» работают часами и плохо воспроизводимы. Реально полезны алгоритмы по его мотивам. Tero et al. 2007; Jones 2010; Adamatzky 2010; Burchett et al., <i>ApJL</i>, 2020.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= ГЛАВА 9 ======================= -->
+<section class="chapter finale" id="ch9" data-scene="final">
+  <div class="ch-head">
+    <span class="ch-num" aria-hidden="true">09</span>
+    <h2 class="chaos chaos-final" data-seed="97">Интеллект не обязательно живёт в мозге</h2>
+    <span class="ch-echo ch-echo-v" aria-hidden="true">КОНЕЦ ПЛЁНКИ</span>
+  </div>
+  <div class="ch-body">
+    <div class="col">
+      <p class="lede">Слизевик не думает, как мы. Но задачи решает.</p>
+      <p>Каждый участок его сети реагирует только на то, что происходит рядом: здесь течёт сильнее, здесь есть еда, а здесь горько. Из миллионов таких местных решений складывается поведение целого: компромисс между длиной и надёжностью сети, обход ловушек, «привыкание». Это не сознание и не мысль. Но это вычисление — распределённое, без центра и без нейронов.</p>
+      <p>Муравейник, корни растений, колонии бактерий, иммунная система работают похоже. Может быть, интеллект — это не орган, а способ организовать материю так, чтобы она училась у среды.</p>
+      <p class="aside">Поставьте курсор-хлопья куда угодно — сеть дотянется.</p>
+    </div>
+    <figure class="clip" data-verdict="true">
+      <div class="tape" aria-hidden="true"></div>
+      <p class="clip-kicker">вырезка №09</p>
+      <blockquote>«Решать задачи можно без нейронов»</blockquote>
+      <p class="verdict"><span class="v-word">правда</span><svg class="v-ring" viewBox="0 0 220 90" aria-hidden="true"><path d="M20 50C18 20 90 8 150 14c50 5 64 30 56 46-10 22-80 26-130 20C40 76 14 62 26 36"/></svg></p>
+      <figcaption>Лабиринты, сети, выбор корма — всё это воспроизводимые опыты. Называть ли это «интеллектом» — вопрос определения.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= ВКЛАДЫШИ ======================= -->
+<div class="inserts-head" id="inserts">
+  <h2 class="chaos" data-seed="101">Вкладыши кассеты</h2>
+</div>
+
+<!-- А -->
+<section class="insert" id="appA" data-scene="calm">
+  <div class="spine" aria-hidden="true">ВКЛАДЫШ А · СТОРОНА Б</div>
+  <div class="insert-body">
+    <h2 class="ins-title"><span class="ins-letter">А</span> Другие «безмозглые» решатели задач</h2>
+    <p class="ins-lede">У всех ниже нет мозга, или он есть, но решение принимает не он.</p>
+    <div class="cmp" role="table" aria-label="Сравнение безмозглых решателей задач">
+      <div class="cmp-row cmp-head" role="row">
+        <span role="columnheader">Кто</span><span role="columnheader">Чем «думает»</span><span role="columnheader">Какую задачу решает</span><span role="columnheader">Статус</span>
+      </div>
+      <div class="cmp-row" role="row">
+        <span role="cell" data-l="Кто"><b>Слизевик</b><br><i>Physarum</i></span>
+        <span role="cell" data-l="Чем «думает»">Поток цитоплазмы и толщина трубок, внешняя слизь</span>
+        <span role="cell" data-l="Задача">Кратчайший путь, сеть между источниками, рацион, U-ловушка</span>
+        <span role="cell" data-l="Статус"><em class="st st-true">правда</em></span>
+      </div>
+      <div class="cmp-row" role="row">
+        <span role="cell" data-l="Кто"><b>Муравьи</b><br>аргентинский муравей</span>
+        <span role="cell" data-l="Чем «думает»">Феромонная дорожка — «записка» на земле (стигмергия); у каждого муравья мозг есть, у колонии нет</span>
+        <span role="cell" data-l="Задача">Выбор более короткой ветви «двойного моста» (Goss et al., 1989); отсюда муравьиные алгоритмы Дориго</span>
+        <span role="cell" data-l="Статус"><em class="st st-true">правда</em></span>
+      </div>
+      <div class="cmp-row" role="row">
+        <span role="cell" data-l="Кто"><b>Растения</b><br>стыдливая мимоза</span>
+        <span role="cell" data-l="Чем «думает»">Электрические и гормональные сигналы, нейронов нет</span>
+        <span role="cell" data-l="Задача">«Привыкание» к безвредным падениям (Gagliano et al., 2014)</span>
+        <span role="cell" data-l="Статус"><em class="st st-disp">спорно</em> — критика: возможна усталость, а не научение (2018)</span>
+      </div>
+      <div class="cmp-row" role="row">
+        <span role="cell" data-l="Кто"><b>Бактерии</b><br><i>Bacillus subtilis</i></span>
+        <span role="cell" data-l="Чем «думает»">Калиевые волны через ионные каналы в биоплёнке</span>
+        <span role="cell" data-l="Задача">Колония согласует рост внутри и на краю, делится «едой» (Prindle et al., 2015)</span>
+        <span role="cell" data-l="Статус"><em class="st st-true">правда</em></span>
+      </div>
+      <div class="cmp-row" role="row">
+        <span role="cell" data-l="Кто"><b>Инфузория</b><br><i>Stentor roeseli</i></span>
+        <span role="cell" data-l="Чем «думает»">Одна клетка, реснички и сократимые волокна</span>
+        <span role="cell" data-l="Задача">Иерархия уклонения: изогнуться → развернуть реснички → сжаться → уплыть (Jennings 1902; повторено Dexter et al., 2019)</span>
+        <span role="cell" data-l="Статус"><em class="st st-true">правда</em>, но порядок шагов вероятностный</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Б -->
+<section class="insert" id="appB" data-scene="calm">
+  <div class="spine" aria-hidden="true">ВКЛАДЫШ Б · ХРОНИКА</div>
+  <div class="insert-body">
+    <h2 class="ins-title"><span class="ins-letter">Б</span> Хроника исследований</h2>
+    <ol class="timeline">
+      <li><b>1822</b><span>Льюис Давид фон Швейниц описывает вид <i>Physarum polycephalum</i> по находкам в Северной Америке.</span></li>
+      <li><b>1859</b><span>Антон де Бари называет слизевиков Mycetozoa — «грибо-животными».</span></li>
+      <li><b>1950-е</b><span>Нобуро Камия измеряет челночный ток и давление, которое его движет.</span></li>
+      <li><b>1958</b><span>Выходит фильм «Капля» (The Blob). Прозвище прилипнет через полвека.</span></li>
+      <li><b>1960–80-е</b><span>Плазмодий с синхронно делящимися ядрами — модель для изучения клеточного цикла; открыты локусы совместимости matA, matB, matC.</span></li>
+      <li><b>2000</b><span>Накагаки, Ямада, Тот: лабиринт, <i>Nature</i>.</span></li>
+      <li><b>2007</b><span>Теро, Кобаяси, Накагаки: математическая модель «поток укрепляет трубку».</span></li>
+      <li><b>2008</b><span>Шнобелевка за лабиринт. Сайгуса и соавт.: «предвосхищение» периодических событий.</span></li>
+      <li><b>2010</b><span>Карта Токио в <i>Science</i> и вторая Шнобелевка. Агентная модель Джонса. Книга Адаматцкого «Physarum Machines». Дюссутур и соавт.: выбор рациона.</span></li>
+      <li><b>2012</b><span>Рид и соавт.: внешняя «память» из слизи.</span></li>
+      <li><b>2016</b><span>Привыкание к хинину и кофеину, передача «опыта» при слиянии клеток. Опубликован геном.</span></li>
+      <li><b>2019</b><span>«Блоб» в Парижском зоопарке. Привыкание к соли переживает спячку.</span></li>
+      <li><b>2020</b><span>Алгоритм по мотивам слизевика картирует космическую паутину.</span></li>
+      <li><b>2021</b><span>Крамар и Алим: «память» в толщине трубок (и критика). Склероции на МКС, 350 тысяч школьников повторяют опыт.</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- В -->
+<section class="insert" id="appC" data-scene="calm">
+  <div class="spine" aria-hidden="true">ВКЛАДЫШ В · КАРТА МИРА</div>
+  <div class="insert-body">
+    <h2 class="ins-title"><span class="ins-letter">В</span> Где его находили</h2>
+    <p class="ins-lede">Растр из точек — суша. Жёлтые пятна — районы, где <i>P. polycephalum</i> находили в природе.</p>
+    <figure class="worldmap">
+      <canvas id="world" role="img" aria-label="Точечная карта мира: находки слизевика отмечены в основном в Северной Америке, Европе, Восточной Азии, Австралии и Новой Зеландии."></canvas>
+      <figcaption><b>Это находки, а не ареал.</b> Точки ориентировочные: сводка по базам наблюдений (GBIF, iNaturalist) и литературе. Густота отражает прежде всего то, где больше наблюдателей и микологов. Пустое место на карте не значит, что слизевика там нет. Вид считается широко распространённым в лесах умеренного пояса.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- Г -->
+<section class="insert" id="appD" data-scene="calm">
+  <div class="spine" aria-hidden="true">ВКЛАДЫШ Г · ТВОЯ СЕТЬ</div>
+  <div class="insert-body">
+    <h2 class="ins-title"><span class="ins-letter">Г</span> Сделай свою сеть</h2>
+    <p class="ins-lede">Выберите регион и расставьте «города»: кликните или тапните по суше. Первый город — место, откуда стартует слизевик. Море он не переплывает.</p>
+    <div class="lab" id="net-lab">
+      <div class="lab-bar">
+        <label class="lab-title" for="region">РЕГИОН</label>
+        <select id="region">
+          <option value="ru">Европейская Россия</option>
+          <option value="eu">Европа</option>
+          <option value="scan">Скандинавия и Балтика</option>
+          <option value="cauc">Кавказ и Чёрное море</option>
+          <option value="kanto">Япония · Канто</option>
+          <option value="blank">Чистый лист</option>
+        </select>
+        <span class="lab-clock" id="net-count" aria-live="polite">городов: 0</span>
+      </div>
+      <div class="simpanel" id="net-panel" data-sim="net" role="application" aria-label="Карта региона. Нажмите на суше, чтобы поставить город.">
+        <svg class="panel-svg" id="net-svg" aria-hidden="true"></svg>
+      </div>
+      <div class="lab-ctl">
+        <button type="button" data-act="net-clear">стереть города</button>
+        <button type="button" data-act="net-regrow">вырастить заново</button>
+        <button type="button" data-act="net-mst" aria-pressed="false">минимальное дерево</button>
+        <button type="button" class="run" data-act="run" hidden>▶ запустить симуляцию</button>
+      </div>
+      <p class="lab-note">Пунктир «минимальное дерево» — самая короткая сеть из прямых отрезков, которая связывает все города. Слизевик обычно строит сеть длиннее, зато с запасными путями. Контуры: Natural Earth.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Д -->
+<section class="insert" id="appE" data-scene="calm">
+  <div class="spine" aria-hidden="true">ВКЛАДЫШ Д · ДОМА</div>
+  <div class="insert-body">
+    <h2 class="ins-title"><span class="ins-letter">Д</span> Как вырастить слизевика дома</h2>
+    <p class="ins-lede"><i>Physarum polycephalum</i> не болезнетворен для людей и животных. Но это живая культура, так что аккуратность обязательна.</p>
+    <ol class="steps">
+      <li><b>Где взять.</b> Купите сухой склероций у поставщика учебных культур. Можно поискать и в лесу: жёлтые сетки на гнилых пнях после дождей. Но так легко принести домой плесень.</li>
+      <li><b>Домик.</b> Пластиковый контейнер с крышкой и парой маленьких отверстий. На дно — бумажное полотенце, смоченное водой, без луж. Лучше отстоянная или бутилированная вода без хлора. Вариант для продвинутых — 1–2% агар.</li>
+      <li><b>Пробуждение.</b> Положите кусочек склероция на влажную бумагу. Через несколько часов или сутки появится жёлтая сеть.</li>
+      <li><b>Еда.</b> Несколько хлопьев простой овсянки — без сахара, соли и добавок. Меняйте их раз в 1–2 дня, съеденные и заплесневелые убирайте.</li>
+      <li><b>Условия.</b> Темнота, комнатная температура — примерно 20–25 °C. Не на солнце и не у батареи. Бумагу держите влажной: раз в день опрыскивайте.</li>
+      <li><b>Пересадка.</b> Когда станет тесно, переложите кусочек сети с хлопьями в чистый контейнер. Слизевик делится без вреда для себя.</li>
+      <li><b>Спячка.</b> Уезжаете — дайте бумаге медленно высохнуть. Получится склероций. Храните его в сухом бумажном конверте, для пробуждения смочите.</li>
+    </ol>
+    <div class="safety">
+      <p class="marker marker-inline">безопасность</p>
+      <ul>
+        <li>Мойте руки до и после, не пробуйте на вкус, держите подальше от еды.</li>
+        <li>Если появился пушистый зелёный, чёрный или белый налёт — это плесень. Закройте контейнер, выбросьте его целиком и не вдыхайте споры. Людям с аллергией на плесень и астмой лучше не заводить культуру.</li>
+        <li>Дети — только вместе со взрослыми.</li>
+        <li>Не выпускайте купленную лабораторную культуру в природу.</li>
+        <li>Спорангии со спорами лучше не разводить в жилой комнате: держите культуру в темноте и сытой, тогда она не начнёт размножаться.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Е -->
+<section class="insert" id="appF" data-scene="calm">
+  <div class="spine" aria-hidden="true">ВКЛАДЫШ Е · СЛОВАРЬ</div>
+  <div class="insert-body">
+    <h2 class="ins-title"><span class="ins-letter">Е</span> Словарь и источники</h2>
+    <dl class="gloss">
+      <dt>Плазмодий</dt><dd>Питающаяся стадия слизевика: одна клетка-сеть с множеством ядер.</dd>
+      <dt>Синцитий</dt><dd>Клетка с множеством ядер без перегородок между ними.</dd>
+      <dt>Миксомицеты</dt><dd>Плазмодиальные («настоящие») слизевики, около тысячи видов.</dd>
+      <dt>Амёбозои</dt><dd>Крупная ветвь одноклеточных, к которой относят амёб и слизевиков.</dd>
+      <dt>Челночный ток</dt><dd>Ритмичное течение цитоплазмы туда-обратно с периодом 1–3 минуты.</dd>
+      <dt>Хемотаксис</dt><dd>Движение по градиенту вещества: к еде или от горького.</dd>
+      <dt>Склероций</dt><dd>Высохшая «спящая» форма плазмодия.</dd>
+      <dt>Спорангий</dt><dd>Плодовое тело на ножке, в котором созревают споры.</dd>
+      <dt>Тип спаривания</dt><dd>Генетический «пароль» совместимости клеток. Не то же самое, что пол.</dd>
+      <dt>Хабитуация</dt><dd>Привыкание: ослабление ответа на повторяющийся безвредный стимул.</dd>
+      <dt>Стигмергия</dt><dd>Координация через следы в среде: феромон, слизь, тропинка.</dd>
+      <dt>Агентная модель</dt><dd>Симуляция из множества простых «агентов» с локальными правилами. Та, что на этой странице, — по Джонсу (2010).</dd>
+    </dl>
+    <h3 class="src-h">Источники</h3>
+    <ol class="sources">
+      <li>Nakagaki T., Yamada H., Tóth Á. Maze-solving by an amoeboid organism. <i>Nature</i> 407, 470 (2000). <a href="https://www.nature.com/articles/35035159">nature.com</a></li>
+      <li>Tero A. et al. Rules for biologically inspired adaptive network design. <i>Science</i> 327, 439–442 (2010). <a href="https://www.science.org/doi/10.1126/science.1177894">doi:10.1126/science.1177894</a></li>
+      <li>Tero A., Kobayashi R., Nakagaki T. A mathematical model for adaptive transport network in path finding by true slime mold. <i>J. Theor. Biol.</i> 244, 553–564 (2007).</li>
+      <li>Jones J. Characteristics of pattern formation and evolution in approximations of Physarum transport networks. <i>Artificial Life</i> 16(2), 127–153 (2010). <a href="https://direct.mit.edu/artl/article-abstract/16/2/127/2650/Characteristics-of-Pattern-Formation-and-Evolution">MIT Press</a></li>
+      <li>Alim K. et al. Random network peristalsis in <i>Physarum polycephalum</i> organizes fluid flows across an individual. <i>PNAS</i> 110, 13306 (2013). <a href="https://www.pnas.org/doi/10.1073/pnas.1305049110">doi:10.1073/pnas.1305049110</a></li>
+      <li>Kamiya N. Protoplasmic streaming. <i>Protoplasmatologia</i> VIII/3a (1959).</li>
+      <li>Reid C. R., Latty T., Dussutour A., Beekman M. Slime mold uses an externalized spatial “memory” to navigate in complex environments. <i>PNAS</i> 109, 17490–17494 (2012). <a href="https://www.pnas.org/doi/10.1073/pnas.1215037109">doi:10.1073/pnas.1215037109</a></li>
+      <li>Saigusa T., Tero A., Nakagaki T., Kuramoto Y. Amoebae anticipate periodic events. <i>Phys. Rev. Lett.</i> 100, 018101 (2008). <a href="https://ui.adsabs.harvard.edu/abs/2008PhRvL.100a8101S">ADS</a></li>
+      <li>Boisseau R. P., Vogel D., Dussutour A. Habituation in non-neural organisms: evidence from slime moulds. <i>Proc. R. Soc. B</i> 283, 20160446 (2016). <a href="https://royalsocietypublishing.org/doi/abs/10.1098/rspb.2016.0446">doi:10.1098/rspb.2016.0446</a></li>
+      <li>Vogel D., Dussutour A. Direct transfer of learned behaviour via cell fusion in non-neural organisms. <i>Proc. R. Soc. B</i> 283, 20162382 (2016). <a href="https://pubmed.ncbi.nlm.nih.gov/28003457/">PubMed</a></li>
+      <li>Boussard A. et al. Memory inception and preservation in slime moulds: the quest for a common mechanism. <i>Phil. Trans. R. Soc. B</i> 374, 20180368 (2019). <a href="https://royalsocietypublishing.org/rstb/article/374/1774/20180368/42300/Memory-inception-and-preservation-in-slime-moulds">Royal Society</a></li>
+      <li>Kramar M., Alim K. Encoding memory in tube diameter hierarchy of living flow network. <i>PNAS</i> 118, e2007815118 (2021). <a href="https://www.pnas.org/doi/10.1073/pnas.2007815118">doi:10.1073/pnas.2007815118</a></li>
+      <li>Nogueira Júnior F. Missing evidence for memory in the monocellular slime mold. <i>PNAS</i> 118, e2105928118 (2021). <a href="https://www.pnas.org/doi/10.1073/pnas.2105928118">doi:10.1073/pnas.2105928118</a></li>
+      <li>Youngman P. J., Anderson R. W., Holt C. E. Two multiallelic mating compatibility loci separately regulate zygote formation and zygote differentiation in the myxomycete <i>Physarum polycephalum</i>. <i>Genetics</i> 97, 513 (1981). <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1214409">PMC</a></li>
+      <li>Kawano S., Kuroiwa T., Anderson R. W. A third multiallelic mating-type locus in <i>Physarum polycephalum</i>. <i>J. Gen. Microbiol.</i> 133, 2539 (1987). <a href="https://www.microbiologyresearch.org/content/journal/micro/10.1099/00221287-133-9-2539">doi:10.1099/00221287-133-9-2539</a></li>
+      <li>Dussutour A., Latty T., Beekman M., Simpson S. J. Amoeboid organism solves complex nutritional challenges. <i>PNAS</i> 107, 4607 (2010). <a href="https://www.pnas.org/doi/10.1073/pnas.0912198107">doi:10.1073/pnas.0912198107</a></li>
+      <li>Latty T., Beekman M. Irrational decision-making in an amoeboid organism: transitivity and context-dependent preferences. <i>Proc. R. Soc. B</i> 278, 307–312 (2011).</li>
+      <li>Adamatzky A. <i>Physarum Machines: Computers from Slime Mould.</i> World Scientific, 2010.</li>
+      <li>Burchett J. N. et al. Revealing the dark threads of the cosmic web. <i>ApJ Letters</i> 891, L35 (2020). <a href="https://news.ucsc.edu/2020/03/cosmic-web/">пресс-релиз UCSC</a></li>
+      <li>Schaap P. et al. The <i>Physarum polycephalum</i> genome reveals extensive use of prokaryotic two-component and metazoan-type tyrosine kinase signaling. <i>Genome Biol. Evol.</i> 8, 109–125 (2016).</li>
+      <li>Goss S., Aron S., Deneubourg J.-L., Pasteels J. M. Self-organized shortcuts in the Argentine ant. <i>Naturwissenschaften</i> 76, 579–581 (1989).</li>
+      <li>Gagliano M. et al. Experience teaches plants to learn faster and forget slower in environments where it matters. <i>Oecologia</i> 175, 63–72 (2014); критика: <a href="https://link.springer.com/article/10.1007/s00442-017-4012-3">Oecologia, 2018</a>.</li>
+      <li>Prindle A. et al. Ion channels enable electrical communication in bacterial communities. <i>Nature</i> 527, 59–63 (2015). <a href="https://www.nature.com/articles/nature15709">nature.com</a></li>
+      <li>Dexter J. P., Prabakaran S., Gunawardena J. A complex hierarchy of avoidance behaviors in a single-cell eukaryote. <i>Curr. Biol.</i> 29 (2019). <a href="https://www.cell.com/current-biology/fulltext/S0960-9822(19)31431-9">cell.com</a></li>
+      <li>CNES. #ElèveTonBlob : l’odyssée des blobs spatiaux (2021). <a href="https://cnes.fr/actualites/elevetonblob-lodyssee-blobs-spatiaux">cnes.fr</a></li>
+      <li>GBIF — записи о находках <i>Physarum polycephalum</i>. <a href="https://www.gbif.org/species/search?q=Physarum%20polycephalum">gbif.org</a></li>
+      <li>Natural Earth — контуры суши и границ (через world-atlas). <a href="https://www.naturalearthdata.com/">naturalearthdata.com</a></li>
+    </ol>
+  </div>
+</section>
+
+<footer class="end">
+  <p class="end-big" aria-hidden="true">■ STOP · EJECT</p>
+  <p>Атлас сделан для чтения и игры. Симуляция — модель, а не живой организм. Проверка фактов — по источникам из вкладыша Е.</p>
+  <p class="end-small"><span id="fps-out">FPS: —</span></p>
+</footer>
+</main>
+
+<div class="tc" aria-label="Прогресс страницы">
+  <span class="tc-lbl" aria-hidden="true">SP ▶</span>
+  <span class="tc-time" id="tc-time" aria-hidden="true">00:00:00</span>
+  <input id="tc-range" type="range" min="0" max="1000" value="0" aria-label="Прокрутка страницы, как перемотка кассеты">
+  <span class="tc-ch" id="tc-ch" aria-live="off">ОБЛОЖКА</span>
+</div>
+
+<noscript><p class="nojs">Для симуляции нужен JavaScript и WebGL 2 — но весь текст доступен и без них.</p></noscript>
+<script type="module" src="main.js"></script>
+</body>
+</html>
